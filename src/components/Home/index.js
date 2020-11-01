@@ -2,7 +2,9 @@ import React from 'react';
 import Container from 'muicss/lib/react/container';
 import Row from 'muicss/lib/react/row';
 import Col from 'muicss/lib/react/col';
-import tree from '../../tree.jpg'
+//import tree from '../../tree.jpg'
+
+import { withFirebase } from '../Firebase';
 
 import './styles.css'
 
@@ -32,7 +34,7 @@ class StateBar extends React.Component{
 	render(){
 		return(
 				<div>
-					<ProgressBar percentage={this.state.percentage} /> 
+					<ProgressBar percentage={this.props.percentage} /> 
 				</div>
 			)
 	}
@@ -80,38 +82,71 @@ class ImageGrid extends React.Component{
 	}
 }
 
-class Home extends React.Component{
+class Homepage extends React.Component{
 	constructor(props){
 		super(props);
-		this.state ={
-			images: Array(4).fill(null),
+		this.state = {
+			images: this.getArray(),
+			values: this.getValues(),
+			score: 0,
 			isFrozen: false,
-		};
+			history: []
+			};
+	}
+
+	getArray(){
+		return(
+			Array.from({length: 4}, 
+				() => Math.floor(Math.random() * 40))
+			);
+	}
+
+	getValues(){
+		return([5,10,15,20]);
+	}
+
+	unfreeze(result){		
+		this.setState({isFrozen: false})
 	}
 
 	handleClick(i){
 		if(this.state.isFrozen){
 			return;
 		}
-		const images = this.state.images.slice();
-		images[i] = 'X';
-		this.setState({images: images, isFrozen: true});
+		let images = this.state.images.slice();
+		let history = this.state.history.slice();
+		let score = this.state.score;
+		this.setState({isFrozen: true});
+		images.push(i);
+		history.push(images);
+		score = score + this.state.values[i];
+		this.setState({history: history, score: score });
+		this.setState({images: this.getArray(), isFrozen: false});
 	}
 
 	render(){
 		return(
 			<Container>
 				<Row>
-					<Col md="8"> <StateBar/> </Col>
+					<Col md="8"> 
+						<StateBar 
+						percentage={this.state.score}
+						/> 
+					</Col>
 				</Row>
 				<ImageGrid
 					images={this.state.images}
 					isFrozen={this.state.isFrozen}
 					onClick={(i) => this.handleClick(i)}
 				/>
+				<div>{JSON.stringify(this.state.history)}</div>
 			</Container>
 		);
 	}
 }
+
+//
+
+const Home = withFirebase(Homepage);
 
 export default Home;

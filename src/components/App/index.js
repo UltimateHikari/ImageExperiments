@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router,
 	Route}
 	from 'react-router-dom';
-import Container from 'muicss/lib/react/container'
+//import Container from 'muicss/lib/react/container'
 
 import Navigation from '../Navigation'
 import LandingPage from '../Landing'

@@ -1,4 +1,5 @@
 import app from 'firebase/app'
+import 'firebase/database'
 
 const config = {
   apiKey: "AIzaSyDRzY2ZcMmwca0H3DSo7A_DiXiSXCjbM8Y",
@@ -13,7 +14,11 @@ const config = {
 class Firebase {
 	constructor(){
 		app.initializeApp(config);
+    this.db = app.database();
 	}
+
+  attempt = aid => this.db.ref(`atms/${aid}`);
+  attempts = () => this.db.ref('atms');
 }
 
 export default Firebase;
