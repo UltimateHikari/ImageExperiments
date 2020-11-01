@@ -4,10 +4,14 @@ img{
 
 .progress-bar {
 	position: relative;
-	height: 20px;
+	height: 40px;
 	width: 100%;
 	border-radius: 50px;
 	border: 1px solid #333;
+}
+
+.progress-score{
+  padding-bottom: 4px;
 }
 
 .filler {

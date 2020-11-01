@@ -15,20 +15,24 @@ const Filler = (props) => {
 		/>
 }
 
+const Score = (props) => {
+	return <table width="100%">
+			<td className="mui--text-left"> Набрано очков: </td>
+			<td className="mui--text-right"> {props.score}/100 </td>
+		</table>
+}
+
 const ProgressBar = (props) => {
 	return (
+		<div>
 			<div className="progress-bar">
 				<Filler percentage={props.percentage}/>
 			</div>
-		)
-}
-
-function StateBar(props){
-	return(
-			<div>
-				<ProgressBar percentage={props.percentage} /> 
+			<div className="progress-score mui--text-headline">
+				<Score score={props.score}/>
 			</div>
-		);
+		</div>
+		)
 }
 
 function Image(props){
@@ -80,6 +84,7 @@ class Homepage extends React.Component{
 			images: this.getArray(),
 			values: this.getValues(),
 			score: 0,
+			percentage: 0,
 			isFrozen: false,
 			history: []
 			};
@@ -110,13 +115,17 @@ class Homepage extends React.Component{
 		this.freeze();
 		images.push(i);
 		history.push(images);
-		score = Math.min(score + this.state.values[i], 100);
-		this.setState({history: history, score: score });
+		let percentage = Math.min(score + this.state.values[i], 100);
+		this.setState({
+			history: history, 
+			percentage: percentage, 
+			score: score + this.state.values[i],
+		});
 
-		if(score < 100){
+		if(percentage < 100){
 			this.setState({images: this.getArray(), isFrozen: false});
 		}else{
-			this.props.firebase.attempts().push(history);
+			//this.props.firebase.attempts().push(history);
 		}
 	}
 
@@ -125,8 +134,9 @@ class Homepage extends React.Component{
 			<Container>
 				<Row>
 					<Col md="8"> 
-						<StateBar
-						percentage={this.state.score}
+						<ProgressBar
+						percentage={this.state.percentage}
+						score={this.state.score}
 						/> 
 					</Col>
 				</Row>
