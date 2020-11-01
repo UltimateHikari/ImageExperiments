@@ -14,6 +14,18 @@ import './styles.css'
 
 const ValuedImages = [val1,val2,val3,val10];
 
+function shuffleArray(array) {
+	let curId = array.length;
+	while (0 !== curId) {
+		let randId = Math.floor(Math.random() * curId);
+		curId -= 1;
+		let tmp = array[curId];
+		array[curId] = array[randId];
+		array[randId] = tmp;
+	}
+	return array;
+}
+
 const Filler = (props) => {
 	return <div
 		className="filler"
@@ -95,6 +107,8 @@ class ImageGrid extends React.Component{
 	}
 }
 
+
+
 class Homepage extends React.Component{
 	constructor(props){
 		super(props);
@@ -121,7 +135,7 @@ class Homepage extends React.Component{
 	}
 
 	getIndices(){
-		return([0,1,2,3]);
+		return(shuffleArray([0,1,2,3]));
 	}
 
 	freeze(){		
@@ -130,7 +144,11 @@ class Homepage extends React.Component{
 
 	unfreeze(){
 		if(this.state.percentage < 100){
-			this.setState({images: this.getArray(), isFrozen: false});
+			this.setState({
+				images: this.getArray(),
+				valueindices: this.getIndices(),
+				isFrozen: false},
+				);
 		}
 	}
 
