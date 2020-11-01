@@ -115,6 +115,8 @@ class Homepage extends React.Component{
 
 		if(score < 100){
 			this.setState({images: this.getArray(), isFrozen: false});
+		}else{
+			this.props.firebase.attempts().push(history);
 		}
 	}
 
