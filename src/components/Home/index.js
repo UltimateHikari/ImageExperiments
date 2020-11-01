@@ -23,21 +23,12 @@ const ProgressBar = (props) => {
 		)
 }
 
-class StateBar extends React.Component{
-	constructor(props){
-		super(props)
-
-		this.state = {
-			percentage: 20
-		}
-	}
-	render(){
-		return(
-				<div>
-					<ProgressBar percentage={this.props.percentage} /> 
-				</div>
-			)
-	}
+function StateBar(props){
+	return(
+			<div>
+				<ProgressBar percentage={props.percentage} /> 
+			</div>
+		);
 }
 
 function Image(props){
@@ -105,8 +96,8 @@ class Homepage extends React.Component{
 		return([5,10,15,20]);
 	}
 
-	unfreeze(result){		
-		this.setState({isFrozen: false})
+	freeze(){		
+		this.setState({isFrozen: true})
 	}
 
 	handleClick(i){
@@ -116,12 +107,15 @@ class Homepage extends React.Component{
 		let images = this.state.images.slice();
 		let history = this.state.history.slice();
 		let score = this.state.score;
-		this.setState({isFrozen: true});
+		this.freeze();
 		images.push(i);
 		history.push(images);
-		score = score + this.state.values[i];
+		score = Math.min(score + this.state.values[i], 100);
 		this.setState({history: history, score: score });
-		this.setState({images: this.getArray(), isFrozen: false});
+
+		if(score < 100){
+			this.setState({images: this.getArray(), isFrozen: false});
+		}
 	}
 
 	render(){
@@ -129,7 +123,7 @@ class Homepage extends React.Component{
 			<Container>
 				<Row>
 					<Col md="8"> 
-						<StateBar 
+						<StateBar
 						percentage={this.state.score}
 						/> 
 					</Col>
