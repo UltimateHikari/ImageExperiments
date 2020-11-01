@@ -54,7 +54,9 @@ function Image(props){
 
 function ImageValue(props){
 	return(
-			<img src={ValuedImages[props.valueindex]} />
+			<img src={ValuedImages[props.valueindex]} 
+				onClick={() => props.onClick()}
+			/>
 			);
 }
 
@@ -64,6 +66,7 @@ class ImageGrid extends React.Component{
 		return(
 			<ImageValue
 				valueindex={this.props.valueindices[i]}
+				onClick={() => this.props.onFrozenClick()}
 			/>
 			);
 		}else{
@@ -125,6 +128,12 @@ class Homepage extends React.Component{
 		this.setState({isFrozen: true})
 	}
 
+	unfreeze(){
+		if(this.state.percentage < 100){
+			this.setState({images: this.getArray(), isFrozen: false});
+		}
+	}
+
 	handleClick(i){
 		if(this.state.isFrozen){
 			return;
@@ -166,6 +175,7 @@ class Homepage extends React.Component{
 					valueindices={this.state.valueindices}
 					isFrozen={this.state.isFrozen}
 					onClick={(i) => this.handleClick(i)}
+					onFrozenClick={() => this.unfreeze()}
 				/>
 				<div>{JSON.stringify(this.state.history)}</div>
 			</Container>
