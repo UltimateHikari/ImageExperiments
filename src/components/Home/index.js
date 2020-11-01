@@ -2,11 +2,17 @@ import React from 'react';
 import Container from 'muicss/lib/react/container';
 import Row from 'muicss/lib/react/row';
 import Col from 'muicss/lib/react/col';
-//import tree from '../../tree.jpg'
+
+import val1 from '../../val1.jpg'
+import val2 from '../../val2.jpg'
+import val3 from '../../val3.jpg'
+import val10 from '../../val10.jpg'
 
 import { withFirebase } from '../Firebase';
 
 import './styles.css'
+
+const ValuedImages = [val1,val2,val3,val10];
 
 const Filler = (props) => {
 	return <div
@@ -45,21 +51,30 @@ function Image(props){
 			</button>
 			);
 }
-//<img src={tree} />
+
+function ImageValue(props){
+	return(
+			<img src={ValuedImages[props.valueindex]} />
+			);
+}
 
 class ImageGrid extends React.Component{
 	renderImage(i){
-		let freeze = "";
 		if(this.props.isFrozen){
-			freeze="frozen";
-		}
+		return(
+			<ImageValue
+				valueindex={this.props.valueindices[i]}
+			/>
+			);
+		}else{
 		return(
 			<Image
-				class={freeze}
+				class=""
 				value={this.props.images[i]}
 				onClick={() => this.props.onClick(i)}
 			/>
 			);
+		}
 	}
 	render(){
 		return(
@@ -83,6 +98,7 @@ class Homepage extends React.Component{
 		this.state = {
 			images: this.getArray(),
 			values: this.getValues(),
+			valueindices: this.getIndices(),
 			score: 0,
 			percentage: 0,
 			isFrozen: false,
@@ -98,7 +114,11 @@ class Homepage extends React.Component{
 	}
 
 	getValues(){
-		return([5,10,15,20]);
+		return([1,2,3,10]);
+	}
+
+	getIndices(){
+		return([0,1,2,3]);
 	}
 
 	freeze(){		
@@ -122,11 +142,11 @@ class Homepage extends React.Component{
 			score: score + this.state.values[i],
 		});
 
-		if(percentage < 100){
-			this.setState({images: this.getArray(), isFrozen: false});
-		}else{
-			//this.props.firebase.attempts().push(history);
-		}
+		// if(percentage < 100){
+		// 	this.setState({images: this.getArray(), isFrozen: false});
+		// }else{
+		// 	//this.props.firebase.attempts().push(history);
+		// }
 	}
 
 	render(){
@@ -142,6 +162,8 @@ class Homepage extends React.Component{
 				</Row>
 				<ImageGrid
 					images={this.state.images}
+					values={this.state.values}
+					valueindices={this.state.valueindices}
 					isFrozen={this.state.isFrozen}
 					onClick={(i) => this.handleClick(i)}
 				/>
