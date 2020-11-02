@@ -154,14 +154,16 @@ class Homepage extends React.Component{
 		let images = this.state.images.slice();
 		let history = this.state.history.slice();
 		let score = this.state.score;
+		let index = this.state.valueindices[i];
 		this.freeze();
 		images.push(i);
 		history.push(images);
-		let percentage = Math.min(score + this.state.values[i], 100);
+		let percentage = 
+		Math.min(score + this.state.values[index], 100);
 		this.setState({
 			history: history, 
 			percentage: percentage, 
-			score: score + this.state.values[i],
+			score: score + this.state.values[index],
 		});
 
 		// if(percentage < 100){
