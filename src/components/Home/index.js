@@ -3,16 +3,11 @@ import Container from 'muicss/lib/react/container';
 import Row from 'muicss/lib/react/row';
 import Col from 'muicss/lib/react/col';
 
-import val1 from '../../val1.jpg'
-import val2 from '../../val2.jpg'
-import val3 from '../../val3.jpg'
-import val10 from '../../val10.jpg'
+import { ValuedImages, gString } from './images.js'
 
 import { withFirebase } from '../Firebase';
 
 import './styles.css'
-
-const ValuedImages = [val1,val2,val3,val10];
 
 function shuffleArray(array) {
 	let curId = array.length;
@@ -66,7 +61,7 @@ function Image(props){
 
 function ImageValue(props){
 	return(
-			<img src={ValuedImages[props.valueindex]} 
+			<img src={gString + ValuedImages[props.valueindex].src}
 				onClick={() => props.onClick()}
 			/>
 			);
