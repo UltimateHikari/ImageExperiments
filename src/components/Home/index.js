@@ -3,7 +3,8 @@ import Container from 'muicss/lib/react/container';
 import Row from 'muicss/lib/react/row';
 import Col from 'muicss/lib/react/col';
 
-import { ValuedImages, gString } from './images.js'
+import { ValuedImages, gString, TestImages } from './images.js';
+import ProgressBar from './bar';
 
 import { withFirebase } from '../Firebase';
 
@@ -21,47 +22,22 @@ function shuffleArray(array) {
 	return array;
 }
 
-const Filler = (props) => {
-	return <div
-		className="filler"
-		style={{width: `${props.percentage}%`}}
-		/>
-}
+const ImageValues = [1,2,3,10];
 
-const Score = (props) => {
-	return <table width="100%">
-			<td className="mui--text-left"> Набрано очков: </td>
-			<td className="mui--text-right"> {props.score}/100 </td>
-		</table>
-}
-
-const ProgressBar = (props) => {
-	return (
-		<div>
-			<div className="progress-bar">
-				<Filler percentage={props.percentage}/>
-			</div>
-			<div className="progress-score mui--text-headline">
-				<Score score={props.score}/>
-			</div>
-		</div>
-		)
-}
+// function Image(props){
+// 		return(
+// 			<button
+// 				className={"square " + props.class}
+// 				onClick={() => props.onClick()}
+// 			>
+// 				{props.value}
+// 			</button>
+// 			);
+// }
 
 function Image(props){
-		return(
-			<button
-				className={"square " + props.class}
-				onClick={() => props.onClick()}
-			>
-				{props.value}
-			</button>
-			);
-}
-
-function ImageValue(props){
 	return(
-			<img src={gString + ValuedImages[props.valueindex].src}
+			<img src={gString + props.imageObj.src}
 				onClick={() => props.onClick()}
 			/>
 			);
@@ -69,22 +45,38 @@ function ImageValue(props){
 
 class ImageGrid extends React.Component{
 	renderImage(i){
+		var imageObj = 
+			TestImages[this.props.images[i].category]
+				[this.props.images[i].id];
+		var clickFunction = () => this.props.onClick(i);
 		if(this.props.isFrozen){
-		return(
-			<ImageValue
-				valueindex={this.props.valueindices[i]}
-				onClick={() => this.props.onFrozenClick()}
-			/>
-			);
-		}else{
-		return(
-			<Image
-				class=""
-				value={this.props.images[i]}
-				onClick={() => this.props.onClick(i)}
-			/>
-			);
+			imageObj = 
+				ValuedImages[this.props.images[i].category];
+			clickFunction = () => this.props.onFrozenClick();
 		}
+
+		return(
+				<Image 
+					imageObj={imageObj}
+					onClick={clickFunction}
+				/>
+			)
+
+		// return(
+		// 	<ImageValue
+		// 		valueindex={this.props.valueindices[i]}
+		// 		onClick={() => this.props.onFrozenClick()}
+		// 	/>
+		// 	);
+		// }else{
+		// return(
+		// 	<Image
+		// 		class=""
+		// 		value={this.props.images[i]}
+		// 		onClick={() => this.props.onClick(i)}
+		// 	/>
+		// 	);
+		// }
 	}
 	render(){
 		return(
@@ -108,9 +100,7 @@ class Homepage extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			images: this.getArray(),
-			values: this.getValues(),
-			valueindices: this.getIndices(),
+			images: this.generateImages(),
 			score: 0,
 			percentage: 0,
 			isFrozen: false,
@@ -118,19 +108,17 @@ class Homepage extends React.Component{
 			};
 	}
 
-	getArray(){
-		return(
-			Array.from({length: 4}, 
-				() => Math.floor(Math.random() * 40))
-			);
-	}
-
-	getValues(){
-		return([1,2,3,10]);
-	}
-
-	getIndices(){
-		return(shuffleArray([0,1,2,3]));
+	generateImages(){
+		var categories = shuffleArray([0,1,2,3]);
+		var result = [];
+		for(let i = 0; i < 4; i++){
+			result.push({
+				category: categories[i],
+				id: Math.floor(
+					Math.random() * TestImages[categories[i]].length)
+			});
+		}
+		return result;
 	}
 
 	freeze(){		
@@ -140,30 +128,37 @@ class Homepage extends React.Component{
 	unfreeze(){
 		if(this.state.percentage < 100){
 			this.setState({
-				images: this.getArray(),
-				valueindices: this.getIndices(),
+				images: this.generateImages(),
 				isFrozen: false},
 				);
 		}
+	}
+
+	refreshHistory(i){
+		var images = this.state.images.slice();
+		var history = this.state.history.slice();
+		var historyFrame = [];
+		for(let i = 0; i < 4; i++){
+			historyFrame.push([images[i].category, images[i].id]);
+		}
+		historyFrame.push(i);
+		history.push(historyFrame);
+		return history;
 	}
 
 	handleClick(i){
 		if(this.state.isFrozen){
 			return;
 		}
-		let images = this.state.images.slice();
-		let history = this.state.history.slice();
 		let score = this.state.score;
-		let index = this.state.valueindices[i];
+		let index = this.state.images[i].category;
 		this.freeze();
-		images.push(i);
-		history.push(images);
 		let percentage = 
-		Math.min(score + this.state.values[index], 100);
+			Math.min(score + ImageValues[index], 100);
 		this.setState({
-			history: history, 
+			history: this.refreshHistory(i), 
 			percentage: percentage, 
-			score: score + this.state.values[index],
+			score: score + ImageValues[index],
 		});
 
 		// if(percentage < 100){
@@ -186,8 +181,6 @@ class Homepage extends React.Component{
 				</Row>
 				<ImageGrid
 					images={this.state.images}
-					values={this.state.values}
-					valueindices={this.state.valueindices}
 					isFrozen={this.state.isFrozen}
 					onClick={(i) => this.handleClick(i)}
 					onFrozenClick={() => this.unfreeze()}
