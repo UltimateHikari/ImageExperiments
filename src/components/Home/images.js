@@ -26,6 +26,7 @@ const TestImages = [
 ];
 
 
-const gString = "https://drive.google.com/uc?export=view&id=";
+//const gString = "https://drive.google.com/uc?export=view&id=";
+const gString = "https://drive.google.com/thumbnail?id="; //thubnail version
 
 export { ValuedImages , gString, TestImages};
