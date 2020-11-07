@@ -6,6 +6,7 @@ import Col from 'muicss/lib/react/col';
 import { ValuedImages, gString, TestImages } from './images.js';
 import ProgressBar from './bar';
 
+import { AuthUserContext } from '../Session';
 import { withFirebase } from '../Firebase';
 
 import './styles.css'
@@ -24,21 +25,11 @@ function shuffleArray(array) {
 
 const ImageValues = [1,2,3,10];
 
-// function Image(props){
-// 		return(
-// 			<button
-// 				className={"square " + props.class}
-// 				onClick={() => props.onClick()}
-// 			>
-// 				{props.value}
-// 			</button>
-// 			);
-// }
-
 function Image(props){
 	return(
 			<img src={gString + props.imageObj.src}
 				onClick={() => props.onClick()}
+				alt=""
 			/>
 			);
 }
@@ -61,23 +52,8 @@ class ImageGrid extends React.Component{
 					onClick={clickFunction}
 				/>
 			)
-
-		// return(
-		// 	<ImageValue
-		// 		valueindex={this.props.valueindices[i]}
-		// 		onClick={() => this.props.onFrozenClick()}
-		// 	/>
-		// 	);
-		// }else{
-		// return(
-		// 	<Image
-		// 		class=""
-		// 		value={this.props.images[i]}
-		// 		onClick={() => this.props.onClick(i)}
-		// 	/>
-		// 	);
-		// }
 	}
+
 	render(){
 		return(
 			<div>
@@ -94,9 +70,7 @@ class ImageGrid extends React.Component{
 	}
 }
 
-
-
-class Homepage extends React.Component{
+class Game extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
@@ -104,7 +78,7 @@ class Homepage extends React.Component{
 			score: 0,
 			percentage: 0,
 			isFrozen: false,
-			history: []
+			history: [this.props.user]
 			};
 	}
 
@@ -191,7 +165,11 @@ class Homepage extends React.Component{
 	}
 }
 
-//
+const Homepage = (props) => (
+	<AuthUserContext.Consumer>
+		{({authUser, changeUser}) => <Game user={authUser}/>}
+	</AuthUserContext.Consumer>
+)
 
 const Home = withFirebase(Homepage);
 

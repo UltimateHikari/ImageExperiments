@@ -7,21 +7,24 @@ import { BrowserRouter as Router,
 import Navigation from '../Navigation'
 import LandingPage from '../Landing'
 import HomePage from '../Home'
+import SignInPage from '../SignIn'
+import { withAuthentication } from '../Session'
 
 import * as ROUTES from '../../constants/routes'
 
 const App = () => (
 	<Router>
 		<div>
-			<Navigation />
+			<Navigation/>
 
 			<hr />
 
 			<Route exact path={ROUTES.LANDING} component={LandingPage} />
 			<Route path={ROUTES.HOME} component={HomePage} />
+			<Route path={ROUTES.SIGN_IN} component={SignInPage} />
 
 		</div>
 	</Router>
 );
 
-export default App;
+export default withAuthentication(App);
