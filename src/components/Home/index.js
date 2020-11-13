@@ -3,7 +3,7 @@ import Container from 'muicss/lib/react/container';
 import Row from 'muicss/lib/react/row';
 import Col from 'muicss/lib/react/col';
 
-import { ValuedImages, gString, TestImages } from './images.js';
+import { ValuedImages, TestImages } from './images.js';
 import ProgressBar from './bar';
 
 import { AuthUserContext } from '../Session';
@@ -27,7 +27,7 @@ const ImageValues = [1,2,3,10];
 
 function Image(props){
 	return(
-			<img src={gString + props.imageObj.src}
+			<img src={props.imageObj.src}
 				onClick={() => props.onClick()}
 				alt=""
 				hidden={props.hidden}
@@ -158,12 +158,15 @@ class Game extends React.Component{
 	refreshHistory(i){
 		var images = this.state.images.slice();
 		var history = this.state.history.slice();
-		var historyFrame = [];
-		for(let i = 0; i < 4; i++){
-			historyFrame.push([images[i].category, images[i].id]);
+		if(history.length === 1){
+			history.push([]);
 		}
-		historyFrame.push(i);
-		history.push(historyFrame);
+		//var historyFrame = history[1];
+		// for(let i = 0; i < 4; i++){
+		// 	historyFrame.push(images[i].category);
+		// }
+		history[1].push(ImageValues[images[i].category]);
+		//history.push(historyFrame);
 		return history;
 	}
 

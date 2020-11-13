@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import Container from 'muicss/lib/react/container';
 
+import Form from 'muicss/lib/react/form';
+import Input from 'muicss/lib/react/input';
+import Button from 'muicss/lib/react/button';
 
 import { AuthUserContext } from '../Session';
 import * as ROUTES from '../../constants/routes';
  
 const SignInPage = () => (
 	<Container>
-		<h1>SignIn</h1>
+		<h1>Но сначала..</h1>
 		<AuthUserContext.Consumer>
 		{({authUser, changeUser}) => 
 			<SignInForm changeUser={changeUser}/>
@@ -18,10 +21,11 @@ const SignInPage = () => (
 );
 
 const INITIAL_STATE = {
-  identity:'',
+  identity: "",
+  age: 0,
   error: null,
 };
- 
+
 class SignInFormBase extends Component {
 	constructor(props) {
 		super(props);
@@ -29,19 +33,11 @@ class SignInFormBase extends Component {
 	}
 
 	onSubmit = event => {
-		const { identity } = this.state;
-		let age = Number(identity);
-		if(identity === 'admin' || (age > 0 && Number.isInteger(age))){
+		const { identity, age} = this.state;
 			this.setState({ ...INITIAL_STATE });
-			this.props.changeUser(age);
-			if(identity === 'admin'){
-				this.props.history.push(ROUTES.ADMIN);
-			}else{
-				this.props.history.push(ROUTES.HOME);
-			}
-		}else{
-			this.setState({error: "try again"});
-		}
+			this.props.changeUser({identity,age});
+			this.props.history.push(ROUTES.HOME);
+			//this.setState({error: "try again"});
 
 		event.preventDefault();
 	};
@@ -51,23 +47,35 @@ class SignInFormBase extends Component {
 	};
 
 	render() {
-		const { identity, error } = this.state;
-		const isInvalid = identity === '';
+		const { error } = this.state;
 		return (
-			<form onSubmit={this.onSubmit}>
-				<input
-					name="identity"
-					value={identity}
-					onChange={this.onChange}
-					type="text"
-					placeholder="Identity"
-				/>
-				<button disabled={isInvalid} type="submit">
-					Sign In
-				</button>
-
-				{error}
-			</form>
+			<Form onSubmit={this.onSubmit}>
+        <legend>Чем ты отличаешься от остальных)?</legend>
+        <Input 
+        	label="Имя-фамилия"
+        	placeholder="Вася Петров"
+        	name="identity"
+        	type="text"
+        	onChange={this.onChange}
+        	required
+        />
+        <Input
+        	label="Возраст"
+        	placeholder="18"
+        	name="age"
+        	type="number"
+        	min="7" max="80"
+        	onChange={this.onChange}
+        	required
+        />
+        <Button
+        	variant="raised"
+        	type="submit"
+        >
+        	Дальше
+        </Button>
+      {error}
+      </Form>
 		);
 	}
 }
