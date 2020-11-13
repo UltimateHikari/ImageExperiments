@@ -30,31 +30,70 @@ function Image(props){
 			<img src={gString + props.imageObj.src}
 				onClick={() => props.onClick()}
 				alt=""
+				hidden={props.hidden}
+				onLoad={() => props.onLoad()}
 			/>
 			);
 }
 
 class ImageGrid extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {
+			loaded: 0,
+		};
+	}
+
+	componentDidUpdate(){
+		console.log("grid updated");
+	}
+	
+	shouldComponentUpdate(nextProps, nextState){
+		console.log("checking " + this.state.loaded + " and " + nextState.loaded +  " " + nextState.loaded % 4);
+		if((nextState.loaded % 4 === 0) || this.state.loaded === 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	Counter(){
+		let loaded_ = this.state.loaded;
+		loaded_++;
+		let hidden_ = true;
+		if(loaded_ % 4 === 0){
+			hidden_ = false;
+		}
+				console.log(loaded_ + " " + hidden_);
+		this.setState({loaded: loaded_, isHidden: hidden_});
+	}
+
 	renderImage(i){
 		var imageObj = 
 			TestImages[this.props.images[i].category]
 				[this.props.images[i].id];
-		var clickFunction = () => this.props.onClick(i);
+
+		var clickFunction = () =>
+				this.props.onClick(i);
+
 		if(this.props.isFrozen){
 			imageObj = 
 				ValuedImages[this.props.images[i].category];
-			clickFunction = () => this.props.onFrozenClick();
+			clickFunction = () =>
+				this.props.onFrozenClick();
 		}
-
 		return(
 				<Image 
 					imageObj={imageObj}
 					onClick={clickFunction}
+					hidden={this.state.isHidden}
+					onLoad={() => this.Counter()}
 				/>
 			)
 	}
 
 	render(){
+		// this.setState({hidden: false});
 		return(
 			<div>
 			<Row>
@@ -77,9 +116,17 @@ class Game extends React.Component{
 			images: this.generateImages(),
 			score: 0,
 			percentage: 0,
+			round:0,
 			isFrozen: false,
 			history: [this.props.user]
 			};
+	}
+
+	componentDidUpdate(){
+		console.log("game updated");
+	}
+	componentDidMount(){
+		console.log(" game mounted");
 	}
 
 	generateImages(){
@@ -126,6 +173,7 @@ class Game extends React.Component{
 		}
 		let score = this.state.score;
 		let index = this.state.images[i].category;
+		let round_ = this.state.round;
 		this.freeze();
 		let percentage = 
 			Math.min(score + ImageValues[index], 100);
@@ -133,6 +181,7 @@ class Game extends React.Component{
 			history: this.refreshHistory(i), 
 			percentage: percentage, 
 			score: score + ImageValues[index],
+			round: round_ + 1,
 		});
 
 		// if(percentage < 100){
@@ -158,6 +207,7 @@ class Game extends React.Component{
 					isFrozen={this.state.isFrozen}
 					onClick={(i) => this.handleClick(i)}
 					onFrozenClick={() => this.unfreeze()}
+					round={this.state.round}
 				/>
 				<div>{JSON.stringify(this.state.history)}</div>
 			</Container>

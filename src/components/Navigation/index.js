@@ -56,9 +56,6 @@ class NavigationNonAuth extends React.Component{
 											<Link className='link' to={ROUTES.LANDING}>Landing</Link>
 										</li>
 										<li>
-											<Link className='link' to={ROUTES.HOME}>Home</Link>
-										</li>
-										<li>
 											<Link className='link' to={ROUTES.SIGN_IN}>Sign In</Link>
 										</li>
 									</ul>

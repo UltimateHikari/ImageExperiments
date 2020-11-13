@@ -34,9 +34,12 @@ class SignInFormBase extends Component {
 		if(identity === 'admin' || (age > 0 && Number.isInteger(age))){
 			this.setState({ ...INITIAL_STATE });
 			this.props.changeUser(age);
-			this.props.history.push(ROUTES.HOME);
+			if(identity === 'admin'){
+				this.props.history.push(ROUTES.ADMIN);
+			}else{
+				this.props.history.push(ROUTES.HOME);
+			}
 		}else{
-			alert("lol");
 			this.setState({error: "try again"});
 		}
 
@@ -63,7 +66,7 @@ class SignInFormBase extends Component {
 					Sign In
 				</button>
 
-				{error && <p>{error.message}</p>}
+				{error}
 			</form>
 		);
 	}
