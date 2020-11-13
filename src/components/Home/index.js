@@ -1,13 +1,17 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom'
 import Container from 'muicss/lib/react/container';
 import Row from 'muicss/lib/react/row';
 import Col from 'muicss/lib/react/col';
+
 
 import { ValuedImages, TestImages } from './images.js';
 import ProgressBar from './bar';
 
 import { AuthUserContext } from '../Session';
 import { withFirebase } from '../Firebase';
+import * as ROUTES from '../../constants/routes';
+
 
 import './styles.css'
 
@@ -116,9 +120,11 @@ class Game extends React.Component{
 			images: this.generateImages(),
 			score: 0,
 			percentage: 0,
-			round:0,
+			round: 1,
+			max_round: 10,
 			isFrozen: false,
-			history: [this.props.user]
+			history: [this.props.user],
+			redirect: null,
 			};
 	}
 
@@ -187,6 +193,10 @@ class Game extends React.Component{
 			round: round_ + 1,
 		});
 
+		if(round_ === this.state.max_round){
+			alert(this.state.history);
+			this.setState({redirect: ROUTES.FINAL, });
+		}
 		// if(percentage < 100){
 		// 	this.setState({images: this.getArray(), isFrozen: false});
 		// }else{
@@ -195,6 +205,9 @@ class Game extends React.Component{
 	}
 
 	render(){
+		if (this.state.redirect) {
+			return <Redirect to={this.state.redirect} />
+		}
 		return(
 			<Container>
 				<Row>
@@ -202,6 +215,8 @@ class Game extends React.Component{
 						<ProgressBar
 						percentage={this.state.percentage}
 						score={this.state.score}
+						round={this.state.round}
+						max_round={this.state.max_round}
 						/> 
 					</Col>
 				</Row>
@@ -210,7 +225,6 @@ class Game extends React.Component{
 					isFrozen={this.state.isFrozen}
 					onClick={(i) => this.handleClick(i)}
 					onFrozenClick={() => this.unfreeze()}
-					round={this.state.round}
 				/>
 				<div>{JSON.stringify(this.state.history)}</div>
 			</Container>

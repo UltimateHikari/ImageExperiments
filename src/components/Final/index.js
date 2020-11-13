@@ -4,7 +4,8 @@ import Panel from 'muicss/lib/react/panel';
 
 const Endpage = (props) => (
 	<Container>
-		<Panel> The End, tx </Panel>
+		<Panel> <h1>Спасибо за участие!</h1> <br/>
+		Возможно, тут могут случиться итоговые баллы и какие-нибудь рейтинги</Panel>
 	</Container>
 )
 
