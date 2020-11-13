@@ -11,7 +11,7 @@ const Score = (props) => {
 	return <table width="100%">
 		<tr>
 			<td className="mui--text-left"> Набрано очков: </td>
-			<td className="mui--text-right"> {props.score}/100 </td>
+			<td className="mui--text-right"> {props.score}/{props.max_score} </td>
 		</tr>
 		<tr>
 			<td className="mui--text-left"> Раунд: </td>
@@ -21,14 +21,17 @@ const Score = (props) => {
 }
 
 const ProgressBar = (props) => {
+	let mult = 1 + Math.floor(props.score/100);
+	let percentage = props.score/mult;
 	return (
 		<div>
 			<div className="progress-bar">
-				<Filler percentage={props.percentage}/>
+				<Filler percentage={percentage}/>
 			</div>
 			<div className="progress-score mui--text-headline">
 				<Score
 				score={props.score}
+				max_score={100*mult}
 				round={props.round}
 				max_round={props.max_round}
 				/>

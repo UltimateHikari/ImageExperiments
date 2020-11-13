@@ -119,9 +119,8 @@ class Game extends React.Component{
 		this.state = {
 			images: this.generateImages(),
 			score: 0,
-			percentage: 0,
 			round: 1,
-			max_round: 10,
+			max_round: 30,
 			isFrozen: false,
 			history: [this.props.user],
 			redirect: null,
@@ -153,12 +152,10 @@ class Game extends React.Component{
 	}
 
 	unfreeze(){
-		if(this.state.percentage < 100){
 			this.setState({
 				images: this.generateImages(),
 				isFrozen: false},
 				);
-		}
 	}
 
 	refreshHistory(i){
@@ -184,17 +181,14 @@ class Game extends React.Component{
 		let index = this.state.images[i].category;
 		let round_ = this.state.round;
 		this.freeze();
-		let percentage = 
-			Math.min(score + ImageValues[index], 100);
 		this.setState({
 			history: this.refreshHistory(i), 
-			percentage: percentage, 
 			score: score + ImageValues[index],
 			round: round_ + 1,
 		});
 
 		if(round_ === this.state.max_round){
-			alert(this.state.history);
+			this.props.firebase.attempts().push(this.state.history);
 			this.setState({redirect: ROUTES.FINAL, });
 		}
 		// if(percentage < 100){
@@ -213,7 +207,6 @@ class Game extends React.Component{
 				<Row>
 					<Col md="8"> 
 						<ProgressBar
-						percentage={this.state.percentage}
 						score={this.state.score}
 						round={this.state.round}
 						max_round={this.state.max_round}
@@ -234,7 +227,7 @@ class Game extends React.Component{
 
 const Homepage = (props) => (
 	<AuthUserContext.Consumer>
-		{({authUser, changeUser}) => <Game user={authUser}/>}
+		{({authUser, changeUser}) => <Game firebase={props.firebase} user={authUser}/>}
 	</AuthUserContext.Consumer>
 )
 
