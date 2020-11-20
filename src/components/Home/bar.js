@@ -9,6 +9,7 @@ const Filler = (props) => {
 
 const Score = (props) => {
 	return <table width="100%">
+		<tbody>
 		<tr>
 			<td className="mui--text-left"> Набрано очков: </td>
 			<td className="mui--text-right"> {props.score}/{props.max_score} </td>
@@ -17,6 +18,7 @@ const Score = (props) => {
 			<td className="mui--text-left"> Раунд: </td>
 			<td className="mui--text-right"> {props.round}/{props.max_round} </td>
 		</tr>
+		</tbody>
 		</table>
 }
 
