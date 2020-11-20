@@ -74,7 +74,7 @@ class ImageGrid extends React.Component{
 
 	renderImage(i){
 		var imageObj = 
-			TestImages[this.props.images[i].category]
+			this.props.test_images[this.props.images[i].category]
 				[this.props.images[i].id];
 
 		var clickFunction = () =>
@@ -82,7 +82,7 @@ class ImageGrid extends React.Component{
 
 		if(this.props.isFrozen){
 			imageObj = 
-				ValuedImages[this.props.images[i].category];
+				this.props.value_images[this.props.images[i].category];
 			clickFunction = () =>
 				this.props.onFrozenClick();
 		}
@@ -132,6 +132,8 @@ class Game extends React.Component{
 	}
 	componentDidMount(){
 		console.log(" game mounted");
+		console.log(this.props.firebase.value_images());
+		console.log(this.props.firebase.test_images());
 	}
 
 	generateImages(){
@@ -214,6 +216,8 @@ class Game extends React.Component{
 					</Col>
 				</Row>
 				<ImageGrid
+					test_images={this.props.firebase.test_images()}
+					value_images={this.props.firebase.value_images()}
 					images={this.state.images}
 					isFrozen={this.state.isFrozen}
 					onClick={(i) => this.handleClick(i)}
