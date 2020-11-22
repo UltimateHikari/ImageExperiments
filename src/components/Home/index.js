@@ -137,13 +137,14 @@ class Game extends React.Component{
 	}
 
 	generateImages(){
+		let test_images = this.props.firebase.test_images();
 		var categories = shuffleArray([0,1,2,3]);
 		var result = [];
 		for(let i = 0; i < 4; i++){
 			result.push({
 				category: categories[i],
 				id: Math.floor(
-					Math.random() * TestImages[categories[i]].length)
+					Math.random() * test_images[categories[i]].length)
 			});
 		}
 		return result;
